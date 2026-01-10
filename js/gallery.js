@@ -34,9 +34,17 @@ const photoFiles = [
 // Variables globales
 let currentPhotoIndex = 0;
 let musicPlaying = false;
+let currentSongIndex = 0;
+
+// Lista de canciones
+const playlist = [
+    'musica/Musica.mp3',
+    'musica/Musica2.mp3',
+    'musica/Musica3.mp3'
+];
 
 // Elementos del DOM
-const galleryGrid = document.getElementById('galleryGrid');
+const articlesWrapper = document.getElementById('articlesWrapper');
 const photoModal = document.getElementById('photoModal');
 const modalImage = document.getElementById('modalImage');
 const modalTitle = document.getElementById('modalTitle');
@@ -48,22 +56,54 @@ const photoCounter = document.getElementById('photoCounter');
 const backgroundMusic = document.getElementById('backgroundMusic');
 const musicToggle = document.getElementById('musicToggle');
 
-// Generar la galería
-function generateGallery() {
+// Generar las fotos estilo periódico (grid compacto)
+function generateArticles() {
     photoFiles.forEach((fileName, index) => {
-        const photoFrame = document.createElement('div');
-        photoFrame.className = 'photo-frame';
-        photoFrame.setAttribute('data-index', index);
+        const photoData = photoTexts[index] || {
+            title: `Momento ${index + 1}`,
+            caption: '',
+            modalText: ''
+        };
 
-        photoFrame.innerHTML = `
-            <div class="photo-wrapper">
-                <img src="imagenes/${fileName}" alt="Foto ${index + 1}" loading="lazy">
-                <div class="photo-number">${index + 1}</div>
-            </div>
+        const photoItem = document.createElement('div');
+        photoItem.className = 'photo-item';
+        photoItem.setAttribute('data-index', index);
+
+        const hasCaption = photoData.caption && photoData.caption.trim().length > 0;
+
+        photoItem.innerHTML = `
+            <figure class="photo-figure">
+                <div class="photo-wrapper">
+                    <img src="imagenes/${fileName}" alt="${photoData.title}" loading="lazy">
+                    <div class="photo-number">#${index + 1}</div>
+                </div>
+                <figcaption class="photo-info">
+                    <h3 class="photo-title">${photoData.title}</h3>
+                    ${hasCaption ? `<p class="photo-caption">${photoData.caption}</p>` : ''}
+                </figcaption>
+            </figure>
         `;
 
-        photoFrame.addEventListener('click', () => openModal(index));
-        galleryGrid.appendChild(photoFrame);
+        // Evento de clic en la imagen
+        const imageElement = photoItem.querySelector('img');
+        if (imageElement) {
+            imageElement.style.cursor = 'pointer';
+            imageElement.addEventListener('click', () => openModal(index));
+        }
+
+        articlesWrapper.appendChild(photoItem);
+
+        // Verificar si hay un artículo que debe aparecer después de esta foto
+        const articleToInsert = articles.find(article => article.position === index + 1);
+        if (articleToInsert) {
+            const articleElement = document.createElement('div');
+            articleElement.className = 'newspaper-article';
+            articleElement.innerHTML = `
+                <h2 class="article-title">${articleToInsert.title}</h2>
+                <p class="article-content">${articleToInsert.content}</p>
+            `;
+            articlesWrapper.appendChild(articleElement);
+        }
     });
 }
 
@@ -85,13 +125,13 @@ function closeModal() {
 function updateModalContent() {
     const photoData = photoTexts[currentPhotoIndex] || {
         title: `Foto ${currentPhotoIndex + 1}`,
-        text: 'Agrega aquí el texto para esta foto en el archivo photo-texts.js'
+        modalText: 'Agrega aquí el texto para esta foto en el archivo photo-texts.js'
     };
 
     modalImage.src = `imagenes/${photoFiles[currentPhotoIndex]}`;
     modalImage.alt = photoData.title;
     modalTitle.textContent = photoData.title;
-    modalText.textContent = photoData.text;
+    modalText.textContent = photoData.modalText || '';
     photoCounter.textContent = `${currentPhotoIndex + 1} / ${photoFiles.length}`;
 }
 
@@ -121,10 +161,33 @@ function toggleMusic() {
     }
 }
 
+// Cargar siguiente canción de la playlist
+function loadNextSong() {
+    currentSongIndex = (currentSongIndex + 1) % playlist.length;
+    backgroundMusic.src = playlist[currentSongIndex];
+    backgroundMusic.load();
+
+    if (musicPlaying) {
+        backgroundMusic.play()
+            .then(() => {
+                console.log(`Reproduciendo canción ${currentSongIndex + 1} de ${playlist.length}`);
+            })
+            .catch((error) => {
+                console.log('Error al reproducir siguiente canción:', error);
+            });
+    }
+}
+
 // Intentar reproducir música automáticamente
 function initMusic() {
     // Configurar volumen inicial
     backgroundMusic.volume = 0.7;
+
+    // Event listener para cuando termine una canción
+    backgroundMusic.addEventListener('ended', () => {
+        console.log('Canción terminada, cargando siguiente...');
+        loadNextSong();
+    });
 
     // Función para intentar reproducir
     const attemptPlay = () => {
@@ -226,6 +289,6 @@ function handleSwipe() {
 
 // Inicializar la aplicación
 document.addEventListener('DOMContentLoaded', () => {
-    generateGallery();
+    generateArticles();
     initMusic();
 });
