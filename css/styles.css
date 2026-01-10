@@ -1,0 +1,531 @@
+/* Variables de colores neutros y hogareños */
+:root {
+    --primary-bg: #f5f5f0;
+    --secondary-bg: #ffffff;
+    --accent-color: #d4a574;
+    --text-primary: #4a4a4a;
+    --text-secondary: #6b6b6b;
+    --border-color: #e0ddd5;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.15);
+    --shadow-dark: rgba(0, 0, 0, 0.25);
+}
+
+/* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background-color: var(--primary-bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Capa de desvanecimiento inicial */
+.fade-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 1;
+}
+
+/* Control de música */
+.music-control {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: var(--secondary-bg);
+    border: 2px solid var(--accent-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px var(--shadow-medium);
+    transition: all 0.3s ease;
+}
+
+.music-control:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px var(--shadow-dark);
+}
+
+.music-control.playing .music-icon {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.music-icon {
+    font-size: 24px;
+}
+
+/* Encabezado */
+.header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    background: linear-gradient(135deg, var(--secondary-bg) 0%, var(--primary-bg) 100%);
+    border-bottom: 3px solid var(--accent-color);
+}
+
+.main-title {
+    font-size: 3.5rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px var(--shadow-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.main-title .flag {
+    font-size: 3rem;
+    display: inline-block;
+    animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(10deg); }
+    75% { transform: rotate(-10deg); }
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Contenedor de la galería */
+.gallery-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Grid de la galería estilo museo */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 20px 0;
+}
+
+/* Marco de foto estilo museo */
+.photo-frame {
+    background-color: var(--secondary-bg);
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    box-shadow:
+        0 2px 8px var(--shadow-light),
+        inset 0 0 0 8px var(--secondary-bg),
+        inset 0 0 0 9px var(--border-color);
+    cursor: pointer;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.photo-frame:hover {
+    transform: translateY(-8px);
+    box-shadow:
+        0 12px 24px var(--shadow-medium),
+        inset 0 0 0 8px var(--secondary-bg),
+        inset 0 0 0 9px var(--accent-color);
+}
+
+.photo-frame::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        rgba(212, 165, 116, 0.1) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.photo-frame:hover::before {
+    opacity: 1;
+}
+
+.photo-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    overflow: hidden;
+    background-color: var(--primary-bg);
+}
+
+.photo-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.photo-frame:hover .photo-wrapper img {
+    transform: scale(1.05);
+}
+
+.photo-number {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid var(--accent-color);
+    z-index: 10;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: var(--secondary-bg);
+    border-radius: 12px;
+    max-width: 1000px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    background-color: var(--text-primary);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.modal-image-container {
+    width: 100%;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px var(--shadow-medium);
+}
+
+.modal-image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.modal-text-container {
+    padding: 0 10px;
+}
+
+.modal-text-container h2 {
+    color: var(--text-primary);
+    font-size: 2rem;
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 10px;
+}
+
+.modal-text-container p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    text-align: justify;
+}
+
+/* Navegación del modal */
+.modal-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    border-top: 2px solid var(--border-color);
+    background-color: var(--primary-bg);
+}
+
+.nav-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.nav-btn:hover {
+    background-color: var(--text-primary);
+    transform: translateX(0) scale(1.05);
+}
+
+.nav-btn:active {
+    transform: scale(0.95);
+}
+
+.photo-counter {
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Responsive Design */
+
+/* Tablets */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 2.5rem;
+        gap: 12px;
+    }
+
+    .main-title .flag {
+        font-size: 2.2rem;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .modal-content {
+        margin: 10px;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .modal-text-container h2 {
+        font-size: 1.6rem;
+    }
+
+    .modal-text-container p {
+        font-size: 1rem;
+    }
+
+    .modal-navigation {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .nav-btn {
+        width: 100%;
+    }
+}
+
+/* Móviles - iPhone 11 y superiores */
+@media (max-width: 480px) {
+    .header {
+        padding: 40px 15px 30px;
+    }
+
+    .main-title {
+        font-size: 2rem;
+        letter-spacing: 1px;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .main-title .flag {
+        font-size: 1.8rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .music-control {
+        width: 45px;
+        height: 45px;
+        top: 15px;
+        right: 15px;
+    }
+
+    .music-icon {
+        font-size: 20px;
+    }
+
+    .gallery-container {
+        padding: 30px 15px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .photo-frame {
+        padding: 10px;
+    }
+
+    .photo-number {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+        bottom: 18px;
+        right: 18px;
+    }
+
+    .modal.active {
+        padding: 0;
+    }
+
+    .modal-content {
+        border-radius: 0;
+        max-height: 100vh;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .modal-close {
+        top: 10px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 24px;
+    }
+
+    .modal-image-container {
+        margin-bottom: 20px;
+    }
+
+    .modal-text-container h2 {
+        font-size: 1.4rem;
+        margin-bottom: 12px;
+    }
+
+    .modal-text-container p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .modal-navigation {
+        padding: 15px;
+    }
+
+    .nav-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    .photo-counter {
+        font-size: 0.9rem;
+    }
+}
+
+/* iPhone 11 Pro y similares */
+@media (max-width: 375px) {
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .main-title {
+        font-size: 1.8rem;
+        gap: 8px;
+    }
+
+    .main-title .flag {
+        font-size: 1.5rem;
+    }
+}
+
+/* Animaciones suaves */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
