@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuestro Aniversario</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/particles.css">
     <style>
         /* Estilo inline para asegurar que la pantalla negra aparezca inmediatamente */
         .fade-overlay-inline {
@@ -23,8 +24,11 @@
     <!-- Capa de desvanecimiento inicial -->
     <div class="fade-overlay fade-overlay-inline" id="fadeOverlay"></div>
 
+    <!-- Contenedor de partículas -->
+    <div id="particles-js"></div>
+
     <!-- Audio de fondo -->
-    <audio id="backgroundMusic" loop autoplay>
+    <audio id="backgroundMusic" autoplay>
         <source src="musica/Musica.mp3" type="audio/mpeg">
     </audio>
 
@@ -35,14 +39,18 @@
 
     <!-- Encabezado -->
     <header class="header">
-        <h1 class="main-title"><span class="flag">🇺🇸</span> Nuestro Aniversario <span class="flag">🇨🇴</span></h1>
-        <p class="subtitle"><!-- Aquí puedes agregar un subtítulo si deseas --></p>
+        <div class="newspaper-header">
+            <div class="header-line"></div>
+            <h1 class="main-title">Nuestro Aniversario</h1>
+            <p class="subtitle">Un año de momentos inolvidables</p>
+            <div class="header-line"></div>
+        </div>
     </header>
 
-    <!-- Galería estilo museo -->
-    <main class="gallery-container">
-        <div class="gallery-grid" id="galleryGrid">
-            <!-- Las fotos se generarán dinámicamente con JavaScript -->
+    <!-- Contenido estilo periódico -->
+    <main class="newspaper-container">
+        <div class="articles-wrapper" id="articlesWrapper">
+            <!-- Los artículos se generarán dinámicamente con JavaScript -->
         </div>
     </main>
 
@@ -68,8 +76,79 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="js/photo-texts.js"></script>
+    <script src="js/articles.js"></script>
     <script src="js/gallery.js"></script>
+
+    <!-- Configuración de partículas tipo luciérnagas -->
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 150,
+                    density: {
+                        enable: true,
+                        value_area: 600
+                    }
+                },
+                color: {
+                    value: '#ffeb3b'
+                },
+                shape: {
+                    type: 'circle'
+                },
+                opacity: {
+                    value: 0.9,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 3,
+                        opacity_min: 0.3,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 6,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 4,
+                        size_min: 2,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: false
+                },
+                move: {
+                    enable: true,
+                    speed: 3,
+                    direction: 'none',
+                    random: true,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false,
+                    attract: {
+                        enable: false
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: {
+                        enable: false
+                    },
+                    onclick: {
+                        enable: false
+                    },
+                    resize: true
+                }
+            },
+            retina_detect: true
+        });
+    </script>
 
     <!-- Script para forzar reproducción y fade -->
     <script>
