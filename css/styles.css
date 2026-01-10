@@ -21,7 +21,7 @@
 
 body {
     font-family: 'Georgia', 'Garamond', 'Times New Roman', serif;
-    background-color: var(--primary-bg);
+    background-color: #f0f0f0;
     color: var(--text-primary);
     line-height: 1.8;
     overflow-x: hidden;
@@ -156,7 +156,7 @@ body {
 .header {
     text-align: center;
     padding: 50px 20px 30px;
-    background-color: var(--secondary-bg);
+    background-color: rgb(226, 226, 226);
     border-bottom: 4px double var(--accent-color);
     position: relative;
     z-index: 10;
@@ -197,7 +197,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 60px 40px;
-    background-color: var(--secondary-bg);
+    background-color: rgba(255, 247, 247, 0.57);
     position: relative;
     z-index: 10;
 }
@@ -220,7 +220,7 @@ body {
 .newspaper-article {
     break-inside: avoid;
     margin-bottom: 20px;
-    background-color: var(--primary-bg);
+    background-color: rgba(221, 221, 221, 0.85);
     border: 2px solid var(--accent-color);
     border-left: 5px solid var(--accent-color);
     padding: 25px;
@@ -304,7 +304,7 @@ body {
 /* Información debajo de la foto */
 .photo-info {
     padding: 15px;
-    background-color: var(--secondary-bg);
+    background-color: rgba(255, 247, 247, 0.98);
 }
 
 .photo-title {

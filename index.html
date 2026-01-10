@@ -83,13 +83,18 @@
 
     <!-- Configuración de partículas tipo luciérnagas -->
     <script>
+        // Ajustar cantidad de partículas según el tamaño de pantalla
+        const isMobile = window.innerWidth <= 768;
+        const particleCount = isMobile ? 60 : 150;
+        const particleSize = isMobile ? 8 : 6;
+
         particlesJS('particles-js', {
             particles: {
                 number: {
-                    value: 150,
+                    value: particleCount,
                     density: {
                         enable: true,
-                        value_area: 600
+                        value_area: isMobile ? 400 : 600
                     }
                 },
                 color: {
@@ -99,22 +104,22 @@
                     type: 'circle'
                 },
                 opacity: {
-                    value: 0.9,
+                    value: 1,
                     random: true,
                     anim: {
                         enable: true,
                         speed: 3,
-                        opacity_min: 0.3,
+                        opacity_min: 0.4,
                         sync: false
                     }
                 },
                 size: {
-                    value: 6,
+                    value: particleSize,
                     random: true,
                     anim: {
                         enable: true,
                         speed: 4,
-                        size_min: 2,
+                        size_min: isMobile ? 3 : 2,
                         sync: false
                     }
                 },
