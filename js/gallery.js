@@ -1,3 +1,7 @@
+// -------------------------------
+// gallery.js completo (solo texto en modal)
+// -------------------------------
+
 // Lista de nombres de archivos de fotos
 const photoFiles = [
     'WhatsApp Image 2026-01-10 at 15.42.05 (1).jpeg',
@@ -56,21 +60,21 @@ const photoCounter = document.getElementById('photoCounter');
 const backgroundMusic = document.getElementById('backgroundMusic');
 const musicToggle = document.getElementById('musicToggle');
 
-// Generar las fotos estilo periódico (grid compacto)
+// -------------------------------
+// Generar las fotos estilo periódico (solo título)
+// -------------------------------
 function generateArticles() {
     photoFiles.forEach((fileName, index) => {
         const photoData = photoTexts[index] || {
             title: `Momento ${index + 1}`,
-            caption: '',
-            modalText: ''
+            text: ''
         };
 
         const photoItem = document.createElement('div');
         photoItem.className = 'photo-item';
         photoItem.setAttribute('data-index', index);
 
-        const hasCaption = photoData.caption && photoData.caption.trim().length > 0;
-
+        // SOLO el título aparece en el grid
         photoItem.innerHTML = `
             <figure class="photo-figure">
                 <div class="photo-wrapper">
@@ -79,12 +83,10 @@ function generateArticles() {
                 </div>
                 <figcaption class="photo-info">
                     <h3 class="photo-title">${photoData.title}</h3>
-                    ${hasCaption ? `<p class="photo-caption">${photoData.caption}</p>` : ''}
                 </figcaption>
             </figure>
         `;
 
-        // Evento de clic en la imagen
         const imageElement = photoItem.querySelector('img');
         if (imageElement) {
             imageElement.style.cursor = 'pointer';
@@ -93,7 +95,7 @@ function generateArticles() {
 
         articlesWrapper.appendChild(photoItem);
 
-        // Verificar si hay un artículo que debe aparecer después de esta foto
+        // Insertar artículo si corresponde
         const articleToInsert = articles.find(article => article.position === index + 1);
         if (articleToInsert) {
             const articleElement = document.createElement('div');
@@ -107,7 +109,9 @@ function generateArticles() {
     });
 }
 
-// Abrir modal
+// -------------------------------
+// Modal: Abrir / Cerrar / Actualizar
+// -------------------------------
 function openModal(index) {
     currentPhotoIndex = index;
     updateModalContent();
@@ -115,27 +119,27 @@ function openModal(index) {
     document.body.style.overflow = 'hidden';
 }
 
-// Cerrar modal
 function closeModal() {
     photoModal.classList.remove('active');
     document.body.style.overflow = 'auto';
 }
 
-// Actualizar contenido del modal
 function updateModalContent() {
     const photoData = photoTexts[currentPhotoIndex] || {
         title: `Foto ${currentPhotoIndex + 1}`,
-        modalText: 'Agrega aquí el texto para esta foto en el archivo photo-texts.js'
+        text: ''
     };
 
     modalImage.src = `imagenes/${photoFiles[currentPhotoIndex]}`;
     modalImage.alt = photoData.title;
     modalTitle.textContent = photoData.title;
-    modalText.textContent = photoData.modalText || '';
+    modalText.textContent = photoData.text || ''; // SOLO aquí aparece el texto
     photoCounter.textContent = `${currentPhotoIndex + 1} / ${photoFiles.length}`;
 }
 
+// -------------------------------
 // Navegación entre fotos
+// -------------------------------
 function showPrevPhoto() {
     currentPhotoIndex = (currentPhotoIndex - 1 + photoFiles.length) % photoFiles.length;
     updateModalContent();
@@ -146,148 +150,90 @@ function showNextPhoto() {
     updateModalContent();
 }
 
-// Control de música
+// -------------------------------
+// Música
+// -------------------------------
 function toggleMusic() {
     if (musicPlaying) {
         backgroundMusic.pause();
         musicToggle.classList.remove('playing');
         musicPlaying = false;
     } else {
-        backgroundMusic.play().catch(error => {
-            console.log('No se pudo reproducir la música automáticamente:', error);
-        });
+        backgroundMusic.play().catch(error => console.log('No se pudo reproducir automáticamente:', error));
         musicToggle.classList.add('playing');
         musicPlaying = true;
     }
 }
 
-// Cargar siguiente canción de la playlist
 function loadNextSong() {
     currentSongIndex = (currentSongIndex + 1) % playlist.length;
     backgroundMusic.src = playlist[currentSongIndex];
     backgroundMusic.load();
-
-    if (musicPlaying) {
-        backgroundMusic.play()
-            .then(() => {
-                console.log(`Reproduciendo canción ${currentSongIndex + 1} de ${playlist.length}`);
-            })
-            .catch((error) => {
-                console.log('Error al reproducir siguiente canción:', error);
-            });
-    }
+    if (musicPlaying) backgroundMusic.play().catch(() => {});
 }
 
-// Intentar reproducir música automáticamente
 function initMusic() {
-    // Configurar volumen inicial
     backgroundMusic.volume = 0.7;
+    backgroundMusic.addEventListener('ended', loadNextSong);
 
-    // Event listener para cuando termine una canción
-    backgroundMusic.addEventListener('ended', () => {
-        console.log('Canción terminada, cargando siguiente...');
-        loadNextSong();
-    });
-
-    // Función para intentar reproducir
     const attemptPlay = () => {
-        const playPromise = backgroundMusic.play();
-
-        if (playPromise !== undefined) {
-            playPromise
-                .then(() => {
-                    musicPlaying = true;
-                    musicToggle.classList.add('playing');
-                    console.log('Música reproduciendo automáticamente');
-                })
-                .catch((error) => {
-                    console.log('Reproducción automática bloqueada:', error);
-                    musicPlaying = false;
-                    musicToggle.classList.remove('playing');
-                });
-        }
+        backgroundMusic.play()
+            .then(() => { musicPlaying = true; musicToggle.classList.add('playing'); })
+            .catch(() => { musicPlaying = false; });
     };
 
-    // Intentar reproducir inmediatamente
     attemptPlay();
 
-    // Intentar reproducir en varios eventos del usuario
     const playOnInteraction = () => {
         if (!musicPlaying) {
-            backgroundMusic.play()
-                .then(() => {
-                    musicPlaying = true;
-                    musicToggle.classList.add('playing');
-                    // Remover listeners después de reproducir exitosamente
-                    document.removeEventListener('click', playOnInteraction);
-                    document.removeEventListener('touchstart', playOnInteraction);
-                    document.removeEventListener('keydown', playOnInteraction);
-                })
-                .catch(() => {});
+            backgroundMusic.play().then(() => {
+                musicPlaying = true;
+                musicToggle.classList.add('playing');
+                document.removeEventListener('click', playOnInteraction);
+                document.removeEventListener('touchstart', playOnInteraction);
+                document.removeEventListener('keydown', playOnInteraction);
+            }).catch(() => {});
         }
     };
 
-    // Agregar múltiples listeners para diferentes tipos de interacción
     document.addEventListener('click', playOnInteraction);
     document.addEventListener('touchstart', playOnInteraction);
     document.addEventListener('keydown', playOnInteraction);
 }
 
-// Event Listeners
+// -------------------------------
+// Eventos
+// -------------------------------
 modalClose.addEventListener('click', closeModal);
 prevBtn.addEventListener('click', showPrevPhoto);
 nextBtn.addEventListener('click', showNextPhoto);
 musicToggle.addEventListener('click', toggleMusic);
 
-// Cerrar modal al hacer clic fuera del contenido
-photoModal.addEventListener('click', (e) => {
-    if (e.target === photoModal) {
-        closeModal();
-    }
+photoModal.addEventListener('click', e => {
+    if (e.target === photoModal) closeModal();
 });
 
-// Navegación con teclado
-document.addEventListener('keydown', (e) => {
-    if (photoModal.classList.contains('active')) {
-        if (e.key === 'Escape') {
-            closeModal();
-        } else if (e.key === 'ArrowLeft') {
-            showPrevPhoto();
-        } else if (e.key === 'ArrowRight') {
-            showNextPhoto();
-        }
-    }
+document.addEventListener('keydown', e => {
+    if (!photoModal.classList.contains('active')) return;
+    if (e.key === 'Escape') closeModal();
+    else if (e.key === 'ArrowLeft') showPrevPhoto();
+    else if (e.key === 'ArrowRight') showNextPhoto();
 });
 
-// Soporte para gestos táctiles en el modal
-let touchStartX = 0;
-let touchEndX = 0;
+// Swipe táctil
+let touchStartX = 0, touchEndX = 0;
 
-photoModal.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-}, { passive: true });
-
-photoModal.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-}, { passive: true });
+photoModal.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+photoModal.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, { passive: true });
 
 function handleSwipe() {
-    const swipeThreshold = 50;
     const diff = touchStartX - touchEndX;
-
-    if (Math.abs(diff) > swipeThreshold) {
-        if (diff > 0) {
-            // Swipe left - siguiente foto
-            showNextPhoto();
-        } else {
-            // Swipe right - foto anterior
-            showPrevPhoto();
-        }
-    }
+    if (Math.abs(diff) > 50) diff > 0 ? showNextPhoto() : showPrevPhoto();
 }
 
-// Inicializar la aplicación
+// -------------------------------
+// Inicialización
+// -------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     generateArticles();
     initMusic();
