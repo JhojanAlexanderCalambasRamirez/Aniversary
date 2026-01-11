@@ -118,7 +118,7 @@ body {
 /* Control de música */
 .music-control {
     position: fixed;
-    top: 20px;
+    top: 80px;
     right: 20px;
     z-index: 10000;
     background-color: var(--secondary-bg);
@@ -190,6 +190,20 @@ body {
     font-style: italic;
     letter-spacing: 2px;
     font-weight: 300;
+}
+
+.bible-verse {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    line-height: 1.8;
+    max-width: 800px;
+    margin: 20px auto 0;
+    padding: 20px 30px;
+    text-align: justify;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-left: 3px solid var(--highlight-color);
+    border-right: 3px solid var(--highlight-color);
 }
 
 /* Contenedor estilo periódico */
@@ -484,6 +498,12 @@ body {
         font-size: 1rem;
     }
 
+    .bible-verse {
+        font-size: 0.9rem;
+        padding: 15px 20px;
+        max-width: 90%;
+    }
+
     .newspaper-container {
         padding: 40px 25px;
     }
@@ -551,10 +571,17 @@ body {
         letter-spacing: 1px;
     }
 
+    .bible-verse {
+        font-size: 0.85rem;
+        padding: 12px 15px;
+        max-width: 95%;
+        line-height: 1.6;
+    }
+
     .music-control {
         width: 45px;
         height: 45px;
-        top: 15px;
+        top: 70px;
         right: 15px;
     }
 

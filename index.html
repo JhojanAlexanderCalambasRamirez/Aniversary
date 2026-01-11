@@ -60,6 +60,7 @@
             <div class="header-line"></div>
             <h1 class="main-title" id="mainTitle"></h1>
             <p class="subtitle" id="subtitle"></p>
+            <div class="bible-verse" id="bibleVerse"></div>
             <div class="header-line"></div>
         </div>
     </header>
@@ -105,6 +106,7 @@
                 languageButton: 'English',
                 mainTitle: 'Nuestro Aniversario',
                 subtitle: 'Mr. and Ms. Torsey',
+                bibleVerse: 'Eclesiastés 4:9-12<br>9 Más valen dos que uno solo, pues tienen mejor remuneración por su trabajo. 10 Porque si uno de ellos cae, el otro levantará a su compañero; pero ¡ay del que cae cuando no hay otro que lo levante! 11 Además, si dos se acuestan juntos se mantienen calientes, pero uno solo ¿cómo se calentará? 12 Y si alguien puede prevalecer contra el que está solo, dos lo resistirán. Un cordel de tres hilos no se rompe fácilmente.',
                 prevBtn: '← Anterior',
                 nextBtn: 'Siguiente →'
             },
@@ -112,6 +114,7 @@
                 languageButton: 'Español',
                 mainTitle: 'Our Anniversary',
                 subtitle: 'Mr. and Ms. Torsey',
+                bibleVerse: 'Ecclesiastes 4:9-12<br>9 Two are better than one, because they have a good reward for their labor. 10 For if one of them falls, the other will lift up his companion. But woe to the one who falls when there is no other to lift him up! 11 Also, if two lie together, they keep warm, but how can one keep warm alone? 12 And if one can prevail against him who is alone, two will resist him. A threefold cord is not quickly broken.',
                 prevBtn: '← Previous',
                 nextBtn: 'Next →'
             }
@@ -121,6 +124,7 @@
         document.getElementById('languageToggle').innerText = texts.languageButton;
         document.getElementById('mainTitle').innerText = texts.mainTitle;
         document.getElementById('subtitle').innerText = texts.subtitle;
+        document.getElementById('bibleVerse').innerHTML = texts.bibleVerse;
         document.getElementById('prevPhoto').innerText = texts.prevBtn;
         document.getElementById('nextPhoto').innerText = texts.nextBtn;
 
