@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/particles.css">
     <style>
-        /* Overlay inicial */
+        /* Estilo inline para asegurar que la pantalla negra aparezca inmediatamente */
         .fade-overlay-inline {
             position: fixed;
             top: 0;
@@ -32,48 +32,34 @@
             border: none;
             background-color: #ffeb3b;
         }
-
-        /* Botón de música */
-        #musicToggle {
-            position: fixed;
-            top: 30px;
-            right: 20px;
-            z-index: 100000;
-            padding: 8px 12px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            background-color: #ffeb3b;
-        }
     </style>
 </head>
 <body>
-    <!-- Overlay inicial -->
+    <!-- Capa de desvanecimiento inicial -->
     <div class="fade-overlay fade-overlay-inline" id="fadeOverlay"></div>
 
-    <!-- Partículas -->
+    <!-- Contenedor de partículas -->
     <div id="particles-js"></div>
 
-    <!-- Audio -->
+    <!-- Audio de fondo -->
     <audio id="backgroundMusic" autoplay>
         <source src="musica/Musica.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Botón de música -->
+    <!-- Control de música -->
     <button id="musicToggle" class="music-control" aria-label="Control de música">
         <span class="music-icon">🎵</span>
     </button>
 
-    <!-- Botón de idioma -->
+    <!-- Botón para cambiar idioma -->
     <button id="languageToggle"></button>
 
     <!-- Encabezado -->
     <header class="header">
         <div class="newspaper-header">
             <div class="header-line"></div>
-            <h1 class="main-title">Nuestro Aniversario</h1>
-            <p class="subtitle">Mr. and Ms. Torsey</p>
+            <h1 class="main-title" id="mainTitle"></h1>
+            <p class="subtitle" id="subtitle"></p>
             <div class="header-line"></div>
         </div>
     </header>
@@ -85,7 +71,7 @@
         </div>
     </main>
 
-    <!-- Modal -->
+    <!-- Modal para mostrar foto y texto -->
     <div id="photoModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" id="modalClose">&times;</button>
@@ -99,32 +85,47 @@
                 </div>
             </div>
             <div class="modal-navigation">
-                <button id="prevPhoto" class="nav-btn">← Anterior</button>
+                <button id="prevPhoto" class="nav-btn" id="prevBtn"></button>
                 <span id="photoCounter" class="photo-counter"></span>
-                <button id="nextPhoto" class="nav-btn">Siguiente →</button>
+                <button id="nextPhoto" class="nav-btn" id="nextBtn"></button>
             </div>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="js/gallery.js"></script>
 
+    <!-- Configuración de idioma y traducción de textos estáticos -->
     <script>
-        // -------------------------------
-        // Detectar idioma inicial
-        // -------------------------------
-        const urlParams = new URLSearchParams(window.location.search);
-        const lang = urlParams.get('lang') || 'es';
+        const lang = new URLSearchParams(window.location.search).get('lang') || 'es';
 
-        // Configurar botón de idioma
-        const langButton = document.getElementById('languageToggle');
-        langButton.innerText = lang === 'es' ? 'English' : 'Español';
+        // Traducción de textos estáticos
+        const translations = {
+            es: {
+                languageButton: 'English',
+                mainTitle: 'Nuestro Aniversario',
+                subtitle: 'Mr. and Ms. Torsey',
+                prevBtn: '← Anterior',
+                nextBtn: 'Siguiente →'
+            },
+            en: {
+                languageButton: 'Español',
+                mainTitle: 'Our Anniversary',
+                subtitle: 'Mr. and Ms. Torsey',
+                prevBtn: '← Previous',
+                nextBtn: 'Next →'
+            }
+        };
 
-        // -------------------------------
-        // Cargar scripts según idioma
-        // -------------------------------
-        if(lang === 'es'){
+        const texts = translations[lang];
+        document.getElementById('languageToggle').innerText = texts.languageButton;
+        document.getElementById('mainTitle').innerText = texts.mainTitle;
+        document.getElementById('subtitle').innerText = texts.subtitle;
+        document.getElementById('prevPhoto').innerText = texts.prevBtn;
+        document.getElementById('nextPhoto').innerText = texts.nextBtn;
+
+        // Cargar scripts dinámicos según idioma
+        if (lang === 'es') {
             document.write('<script src="js/photo-texts.js"><\/script>');
             document.write('<script src="js/articles.js"><\/script>');
         } else {
@@ -132,20 +133,21 @@
             document.write('<script src="js/articlesEnglish.js"><\/script>');
         }
 
-        // -------------------------------
-        // Cambiar idioma al presionar botón
-        // -------------------------------
-        langButton.addEventListener('click', function() {
+        // Botón de cambio de idioma
+        document.getElementById('languageToggle').addEventListener('click', function() {
             if(lang === 'es'){
                 window.location.search = '?lang=en';
             } else {
                 window.location.search = '?lang=es';
             }
         });
+    </script>
 
-        // -------------------------------
-        // Configuración de partículas
-        // -------------------------------
+    <!-- Gallery.js -->
+    <script src="js/gallery.js"></script>
+
+    <!-- Configuración de partículas -->
+    <script>
         const isMobile = window.innerWidth <= 768;
         const particleCount = isMobile ? 60 : 150;
         const particleSize = isMobile ? 8 : 6;
@@ -166,31 +168,24 @@
             },
             retina_detect: true
         });
+    </script>
 
-        // -------------------------------
-        // Fade inicial
-        // -------------------------------
+    <!-- Fade overlay y reproducción de audio -->
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             const fadeOverlay = document.getElementById('fadeOverlay');
-            setTimeout(function() {
+            setTimeout(() => {
                 fadeOverlay.style.transition = 'opacity 7s ease-in-out';
                 fadeOverlay.style.opacity = '0';
-                setTimeout(function() {
-                    fadeOverlay.style.visibility = 'hidden';
-                }, 7000);
+                setTimeout(() => fadeOverlay.style.visibility = 'hidden', 7000);
             }, 100);
-        });
 
-        // -------------------------------
-        // Audio
-        // -------------------------------
-        window.addEventListener('load', function() {
+            // Audio
             const audio = document.getElementById('backgroundMusic');
             audio.volume = 0.7;
             const playAttempt = audio.play();
-            if (playAttempt !== undefined) {
-                playAttempt.catch(error => { console.log('Autoplay bloqueado, esperando interacción del usuario'); });
-            }
+            if (playAttempt !== undefined) playAttempt.catch(err => console.log('Autoplay bloqueado'));
+
         });
     </script>
 </body>
