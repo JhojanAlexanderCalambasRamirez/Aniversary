@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/particles.css">
     <style>
-        /* Estilo inline para asegurar que la pantalla negra aparezca inmediatamente */
+        /* Overlay inicial */
         .fade-overlay-inline {
             position: fixed;
             top: 0;
@@ -32,27 +32,41 @@
             border: none;
             background-color: #ffeb3b;
         }
+
+        /* Botón de música */
+        #musicToggle {
+            position: fixed;
+            top: 30px;
+            right: 20px;
+            z-index: 100000;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #ffeb3b;
+        }
     </style>
 </head>
 <body>
-    <!-- Capa de desvanecimiento inicial -->
+    <!-- Overlay inicial -->
     <div class="fade-overlay fade-overlay-inline" id="fadeOverlay"></div>
 
-    <!-- Contenedor de partículas -->
+    <!-- Partículas -->
     <div id="particles-js"></div>
 
-    <!-- Audio de fondo -->
+    <!-- Audio -->
     <audio id="backgroundMusic" autoplay>
         <source src="musica/Musica.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Control de música -->
+    <!-- Botón de música -->
     <button id="musicToggle" class="music-control" aria-label="Control de música">
         <span class="music-icon">🎵</span>
     </button>
 
-    <!-- Botón para cambiar idioma -->
-    <button id="languageToggle">English</button>
+    <!-- Botón de idioma -->
+    <button id="languageToggle"></button>
 
     <!-- Encabezado -->
     <header class="header">
@@ -71,7 +85,7 @@
         </div>
     </main>
 
-    <!-- Modal para mostrar foto y texto -->
+    <!-- Modal -->
     <div id="photoModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" id="modalClose">&times;</button>
@@ -80,8 +94,8 @@
                     <img id="modalImage" src="" alt="Foto seleccionada">
                 </div>
                 <div class="modal-text-container">
-                    <h2 id="modalTitle"><!-- Título de la foto --></h2>
-                    <p id="modalText"><!-- Texto descriptivo de la foto --></p>
+                    <h2 id="modalTitle"></h2>
+                    <p id="modalText"></p>
                 </div>
             </div>
             <div class="modal-navigation">
@@ -94,10 +108,22 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="js/gallery.js"></script>
 
-    <!-- Cargar scripts según idioma -->
     <script>
-        const lang = new URLSearchParams(window.location.search).get('lang') || 'es';
+        // -------------------------------
+        // Detectar idioma inicial
+        // -------------------------------
+        const urlParams = new URLSearchParams(window.location.search);
+        const lang = urlParams.get('lang') || 'es';
+
+        // Configurar botón de idioma
+        const langButton = document.getElementById('languageToggle');
+        langButton.innerText = lang === 'es' ? 'English' : 'Español';
+
+        // -------------------------------
+        // Cargar scripts según idioma
+        // -------------------------------
         if(lang === 'es'){
             document.write('<script src="js/photo-texts.js"><\/script>');
             document.write('<script src="js/articles.js"><\/script>');
@@ -105,13 +131,21 @@
             document.write('<script src="js/photo-textsEnglish.js"><\/script>');
             document.write('<script src="js/articlesEnglish.js"><\/script>');
         }
-    </script>
 
-    <!-- Gallery.js -->
-    <script src="js/gallery.js"></script>
+        // -------------------------------
+        // Cambiar idioma al presionar botón
+        // -------------------------------
+        langButton.addEventListener('click', function() {
+            if(lang === 'es'){
+                window.location.search = '?lang=en';
+            } else {
+                window.location.search = '?lang=es';
+            }
+        });
 
-    <!-- Configuración de partículas tipo luciérnagas -->
-    <script>
+        // -------------------------------
+        // Configuración de partículas
+        // -------------------------------
         const isMobile = window.innerWidth <= 768;
         const particleCount = isMobile ? 60 : 150;
         const particleSize = isMobile ? 8 : 6;
@@ -132,10 +166,10 @@
             },
             retina_detect: true
         });
-    </script>
 
-    <!-- Script para forzar reproducción y fade -->
-    <script>
+        // -------------------------------
+        // Fade inicial
+        // -------------------------------
         document.addEventListener('DOMContentLoaded', function() {
             const fadeOverlay = document.getElementById('fadeOverlay');
             setTimeout(function() {
@@ -147,21 +181,15 @@
             }, 100);
         });
 
+        // -------------------------------
+        // Audio
+        // -------------------------------
         window.addEventListener('load', function() {
             const audio = document.getElementById('backgroundMusic');
             audio.volume = 0.7;
             const playAttempt = audio.play();
             if (playAttempt !== undefined) {
                 playAttempt.catch(error => { console.log('Autoplay bloqueado, esperando interacción del usuario'); });
-            }
-        });
-
-        // Botón de cambio de idioma
-        document.getElementById('languageToggle').addEventListener('click', function() {
-            if(lang === 'es'){
-                window.location.search = '?lang=en';
-            } else {
-                window.location.search = '?lang=es';
             }
         });
     </script>
