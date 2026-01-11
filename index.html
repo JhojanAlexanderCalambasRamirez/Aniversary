@@ -18,6 +18,20 @@
             z-index: 99999;
             pointer-events: none;
         }
+
+        /* Botón de idioma */
+        #languageToggle {
+            position: fixed;
+            top: 30px;
+            right: 80px;
+            z-index: 100000;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #ffeb3b;
+        }
     </style>
 </head>
 <body>
@@ -36,6 +50,9 @@
     <button id="musicToggle" class="music-control" aria-label="Control de música">
         <span class="music-icon">🎵</span>
     </button>
+
+    <!-- Botón para cambiar idioma -->
+    <button id="languageToggle">English</button>
 
     <!-- Encabezado -->
     <header class="header">
@@ -77,79 +94,41 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="js/photo-texts.js"></script>
-    <script src="js/articles.js"></script>
+
+    <!-- Cargar scripts según idioma -->
+    <script>
+        const lang = new URLSearchParams(window.location.search).get('lang') || 'es';
+        if(lang === 'es'){
+            document.write('<script src="js/photo-texts.js"><\/script>');
+            document.write('<script src="js/articles.js"><\/script>');
+        } else {
+            document.write('<script src="js/photo-textsEnglish.js"><\/script>');
+            document.write('<script src="js/articlesEnglish.js"><\/script>');
+        }
+    </script>
+
+    <!-- Gallery.js -->
     <script src="js/gallery.js"></script>
 
     <!-- Configuración de partículas tipo luciérnagas -->
     <script>
-        // Ajustar cantidad de partículas según el tamaño de pantalla
         const isMobile = window.innerWidth <= 768;
         const particleCount = isMobile ? 60 : 150;
         const particleSize = isMobile ? 8 : 6;
 
         particlesJS('particles-js', {
             particles: {
-                number: {
-                    value: particleCount,
-                    density: {
-                        enable: true,
-                        value_area: isMobile ? 400 : 600
-                    }
-                },
-                color: {
-                    value: '#ffeb3b'
-                },
-                shape: {
-                    type: 'circle'
-                },
-                opacity: {
-                    value: 1,
-                    random: true,
-                    anim: {
-                        enable: true,
-                        speed: 3,
-                        opacity_min: 0.4,
-                        sync: false
-                    }
-                },
-                size: {
-                    value: particleSize,
-                    random: true,
-                    anim: {
-                        enable: true,
-                        speed: 4,
-                        size_min: isMobile ? 3 : 2,
-                        sync: false
-                    }
-                },
-                line_linked: {
-                    enable: false
-                },
-                move: {
-                    enable: true,
-                    speed: 3,
-                    direction: 'none',
-                    random: true,
-                    straight: false,
-                    out_mode: 'out',
-                    bounce: false,
-                    attract: {
-                        enable: false
-                    }
-                }
+                number: { value: particleCount, density: { enable: true, value_area: isMobile ? 400 : 600 } },
+                color: { value: '#ffeb3b' },
+                shape: { type: 'circle' },
+                opacity: { value: 1, random: true, anim: { enable: true, speed: 3, opacity_min: 0.4, sync: false } },
+                size: { value: particleSize, random: true, anim: { enable: true, speed: 4, size_min: isMobile ? 3 : 2, sync: false } },
+                line_linked: { enable: false },
+                move: { enable: true, speed: 3, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false, attract: { enable: false } }
             },
             interactivity: {
                 detect_on: 'canvas',
-                events: {
-                    onhover: {
-                        enable: false
-                    },
-                    onclick: {
-                        enable: false
-                    },
-                    resize: true
-                }
+                events: { onhover: { enable: false }, onclick: { enable: false }, resize: true }
             },
             retina_detect: true
         });
@@ -157,34 +136,32 @@
 
     <!-- Script para forzar reproducción y fade -->
     <script>
-        // Iniciar el fade inmediatamente
         document.addEventListener('DOMContentLoaded', function() {
             const fadeOverlay = document.getElementById('fadeOverlay');
-
-            // Iniciar el fade después de un pequeño delay para asegurar que todo esté cargado
             setTimeout(function() {
                 fadeOverlay.style.transition = 'opacity 7s ease-in-out';
                 fadeOverlay.style.opacity = '0';
-
-                // Remover el overlay después de la animación
                 setTimeout(function() {
                     fadeOverlay.style.visibility = 'hidden';
                 }, 7000);
             }, 100);
         });
 
-        // Intentar reproducir inmediatamente cuando se carga el script
         window.addEventListener('load', function() {
             const audio = document.getElementById('backgroundMusic');
             audio.volume = 0.7;
-
-            // Intentar reproducir
             const playAttempt = audio.play();
-
             if (playAttempt !== undefined) {
-                playAttempt.catch(error => {
-                    console.log('Autoplay bloqueado, esperando interacción del usuario');
-                });
+                playAttempt.catch(error => { console.log('Autoplay bloqueado, esperando interacción del usuario'); });
+            }
+        });
+
+        // Botón de cambio de idioma
+        document.getElementById('languageToggle').addEventListener('click', function() {
+            if(lang === 'es'){
+                window.location.search = '?lang=en';
+            } else {
+                window.location.search = '?lang=es';
             }
         });
     </script>
